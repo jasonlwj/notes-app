@@ -21,6 +21,7 @@ const unknownEndpoint = (req, res, next) => {
 app.use(express.json())
 app.use(requestLogger)
 app.use(cors())
+app.use(express.static('build'))
 
 /**
  * Data
