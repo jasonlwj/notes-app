@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/notes/5f9a10fb1f865222f9fd737a
+content-type: application/json
+
+{
+	"content": "Rock and stone to the bone",
+	"important": true
+}
