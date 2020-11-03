@@ -25,6 +25,8 @@ const errorHandler = (err, req, res, next) => {
 
 	if (err.name === 'CastError') {
 		return res.status(400).send({ error: 'malformatted id' })
+	} else if (err.name === 'ValidationError') {
+		return res.status(400).send({ error: err.message })
 	}
 
 	next(err)
@@ -44,11 +46,14 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/notes', (req, res) => {
-	Note.find({}).then(notes => res.json(notes))
+	Note
+		.find({})
+		.then(notes => res.json(notes))
 })
 
 app.get('/api/notes/:id', (req, res, next) => {
-	Note.findById(req.params.id)
+	Note
+		.findById(req.params.id)
 		.then(note => {
 			if (note) {
 				res.json(note)
@@ -60,14 +65,15 @@ app.get('/api/notes/:id', (req, res, next) => {
 })
 
 app.delete('/api/notes/:id', (req, res) => {
-	Note.findByIdAndDelete(req.params.id)
+	Note
+		.findByIdAndDelete(req.params.id)
 		.then(result => {
 			res.status(204).end()
 		})
 		.catch(err => next(err))
 })
 
-app.post('/api/notes', (req, res) => {
+app.post('/api/notes', (req, res, next) => {
 	const body = req.body
 
 	if (!body.content) {
@@ -82,7 +88,11 @@ app.post('/api/notes', (req, res) => {
 		date: new Date()
 	})
 
-	note.save().then(savedNote => res.json(savedNote))
+	note
+		.save()
+		.then(savedNote => savedNote.toJSON())
+		.then(formattedNote => res.json(formattedNote))
+		.catch(err => next(err))
 })
 
 app.put('/api/notes/:id', (req, res, next) => {
@@ -93,7 +103,8 @@ app.put('/api/notes/:id', (req, res, next) => {
 		important: body.important
 	}
 
-	Note.findByIdAndUpdate(req.params.id, note, { new: true })
+	Note
+		.findByIdAndUpdate(req.params.id, note, { new: true })
 		.then(updatedNote => {
 			res.json(updatedNote)
 		})
