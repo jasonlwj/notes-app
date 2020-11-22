@@ -2,6 +2,7 @@ POST http://localhost:3001/api/notes
 content-type: application/json
 
 {
-	"content": "Poggers",
-	"important": false
+	"content": "test note",
+	"important": true,
+	"userId": "5fbaf2d587b3541be56c0db9"
 }
