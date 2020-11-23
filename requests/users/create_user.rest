@@ -1,5 +1,5 @@
 POST http://localhost:3001/api/users
-content-type: application/json
+Content-Type: application/json
 
 {
 	"username": "mluukkai",
@@ -10,7 +10,7 @@ content-type: application/json
 ###
 
 POST http://localhost:3001/api/users
-content-type: application/json
+Content-Type: application/json
 
 {
 	"username": "root",
