@@ -76,8 +76,13 @@ describe('addition of a new note', () => {
 			important: true,
 		}
 
+		const user = await api
+			.post('/api/login')
+			.send({ username: 'root', password: 'sekret' })
+
 		await api
 			.post('/api/notes')
+			.set('Authorization', `bearer ${user.body.token}`)
 			.send(newNote)
 			.expect(200)
 			.expect('Content-Type', /application\/json/)
@@ -94,8 +99,13 @@ describe('addition of a new note', () => {
 			important: true
 		}
 
+		const user = await api
+			.post('/api/login')
+			.send({ username: 'root', password: 'sekret' })
+
 		await api
 			.post('/api/notes')
+			.set('Authorization', `bearer ${user.body.token}`)
 			.send(newNote)
 			.expect(400)
 
