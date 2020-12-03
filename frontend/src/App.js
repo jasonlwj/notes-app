@@ -9,6 +9,8 @@ const App = () => {
 	const [ newNote, setNewNote ] = useState('')
 	const [ showAll, setShowAll ] = useState(true) // false: only show important notes
 	const [ errorMessage, setErrorMessage ] = useState(null)
+	const [ username, setUsername ] = useState('')
+	const [ password, setPassword ] = useState('')
 	
 	// get all notes
 	useEffect(() => {
@@ -54,6 +56,8 @@ const App = () => {
 	// handle form state
 	const handleToggleShowAll = () => setShowAll(!showAll)
 	const handleNewNoteChange = event => setNewNote(event.target.value)
+	const handleUsernameChange = event => setUsername(event.target.value)
+	const handlePasswordChange = event => setPassword(event.target.value)
 
 	// grab notes that match filter criteria
 	const notesToShow = showAll 
@@ -66,6 +70,14 @@ const App = () => {
 			<div>
 				<h1>Notes</h1>
 				<Notification message={errorMessage} />
+				<form>
+					<div>
+						username <input type="text" value={username} onChange={handleUsernameChange} />
+					</div>
+					<div>
+						password <input type="password" value={password} onChange={handlePasswordChange} />
+					</div>
+				</form>
 				<button onClick={handleToggleShowAll}>
 					show {showAll ? 'important' : 'all'}
 				</button>
@@ -75,7 +87,7 @@ const App = () => {
 					)}
 				</ul>
 				<form onSubmit={addNote}>
-					<input value={newNote} onChange={handleNewNoteChange} />
+					<input type="text" value={newNote} onChange={handleNewNoteChange} />
 					<button type="submit">save</button>
 				</form>
 			</div>
