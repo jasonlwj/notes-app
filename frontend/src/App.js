@@ -3,9 +3,8 @@ import noteService from './services/notes'
 import loginService from './services/login'
 import Note from './components/Note'
 import Notification from './components/Notification'
-
-// TODO: add logout function
-// TODO: refactor this file
+import LoginForm from './components/LoginForm'
+import NoteForm from './components/NoteForm'
 
 const App = () => {
 	const [ notes, setNotes ] = useState([])
@@ -67,9 +66,9 @@ const App = () => {
 			})
 	}
 
+	// login button event handler
 	const handleLogin = async event => {
 		event.preventDefault()
-		console.log('logging in with', username, password)
 
 		try {
 			const user = await loginService.login({
@@ -93,6 +92,7 @@ const App = () => {
 		}
 	}
 
+	// logout button event handler
 	const handleLogout = () => {
 		window.localStorage.removeItem('loggedInNoteUser')
 		noteService.setToken(null)
@@ -110,27 +110,6 @@ const App = () => {
 		? notes 
 		: notes.filter(note => note.important)
 
-	// form to login
-	const loginForm = () => (
-		<form onSubmit={handleLogin}>
-			<div>
-				username <input type="text" value={username} onChange={handleUsernameChange} />
-			</div>
-			<div>
-				password <input type="password" value={password} onChange={handlePasswordChange} />
-			</div>
-			<button type="submit">login</button>
-		</form>
-	)
-
-	// form to add notes
-	const noteForm = () => (
-		<form onSubmit={addNote}>
-			<input type="text" value={newNote} onChange={handleNewNoteChange} />
-			<button type="submit">save</button>
-		</form>
-	)
-
 	// render it all to the screen
 	return (
 		<div className="App">
@@ -138,12 +117,22 @@ const App = () => {
 				<h1>Notes</h1>
 				<Notification message={errorMessage} />
 				{
-					(user === null)
-						? loginForm()
-						: <div>
+					(user === null) ? 
+						<LoginForm
+							username={username}
+							password={password}
+							handleUsernameChange={handleUsernameChange}
+							handlePasswordChange={handlePasswordChange}
+							handleLogin={handleLogin} 
+						/> : 
+						<div>
 							<p>{user.name} logged in</p>
 							<button onClick={handleLogout}>logout</button>
-							{noteForm()}
+							<NoteForm 
+								addNote={addNote}
+								newNote={newNote}
+								handleNewNoteChange={handleNewNoteChange}
+							/>
 						</div>
 				}
 				<button onClick={handleToggleShowAll}>
