@@ -25,8 +25,8 @@ mongoose
 	.then(() =>
 		logger.info('connected to MongoDB')
 	)
-	.catch(err =>
-		logger.error('error connecting to MongoDB:', err)
+	.catch(error =>
+		logger.error('error connecting to MongoDB:', error)
 	)
 
 app.use(cors())

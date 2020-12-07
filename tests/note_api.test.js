@@ -23,14 +23,14 @@ describe('when there is initially some notes saved', () => {
 	})
 
 	test('all notes are returned', async () => {
-		const res = await api.get('/api/notes')
+		const response = await api.get('/api/notes')
 
-		expect(res.body).toHaveLength(helper.initialNotes.length)
+		expect(response.body).toHaveLength(helper.initialNotes.length)
 	})
 
 	test('a specific note is within the returned notes', async () => {
-		const res = await api.get('/api/notes')
-		const contents = res.body.map(note => note.content)
+		const response = await api.get('/api/notes')
+		const contents = response.body.map(note => note.content)
 
 		expect(contents).toContain('Browser can execute only Javascript')
 	})
