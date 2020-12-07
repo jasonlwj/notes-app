@@ -4,6 +4,9 @@ import loginService from './services/login'
 import Note from './components/Note'
 import Notification from './components/Notification'
 
+// TODO: add logout function
+// TODO: refactor this file
+
 const App = () => {
 	const [ notes, setNotes ] = useState([])
 	const [ newNote, setNewNote ] = useState('')
@@ -18,6 +21,17 @@ const App = () => {
 		noteService
 			.getAll()
 			.then(initialNotes => setNotes(initialNotes))
+	}, [])
+
+	// check if user logged-in
+	useEffect(() => {
+		const loggedInNoteUser = window.localStorage.getItem('loggedInNoteUser')
+
+		if (loggedInNoteUser) {
+			const userJSON = JSON.parse(loggedInNoteUser)
+			setUser(userJSON)
+			noteService.setToken(userJSON.token)
+		}
 	}, [])
 
 	// create note
@@ -62,6 +76,10 @@ const App = () => {
 				username,
 				password
 			})
+
+			window.localStorage.setItem(
+				'loggedInNoteUser', JSON.stringify(user)
+			)
 
 			noteService.setToken(user.token)
 			setUser(user)
