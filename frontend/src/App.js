@@ -62,6 +62,8 @@ const App = () => {
 				username,
 				password
 			})
+
+			noteService.setToken(user.token)
 			setUser(user)
 			setUsername('')
 			setPassword('')
@@ -84,6 +86,7 @@ const App = () => {
 		? notes 
 		: notes.filter(note => note.important)
 
+	// form to login
 	const loginForm = () => (
 		<form onSubmit={handleLogin}>
 			<div>
@@ -96,6 +99,7 @@ const App = () => {
 		</form>
 	)
 
+	// form to add notes
 	const noteForm = () => (
 		<form onSubmit={addNote}>
 			<input type="text" value={newNote} onChange={handleNewNoteChange} />
