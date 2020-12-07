@@ -93,6 +93,12 @@ const App = () => {
 		}
 	}
 
+	const handleLogout = () => {
+		window.localStorage.removeItem('loggedInNoteUser')
+		noteService.setToken(null)
+		setUser(null)
+	}
+
 	// handle form state
 	const handleToggleShowAll = () => setShowAll(!showAll)
 	const handleNewNoteChange = ({ target }) => setNewNote(target.value)
@@ -136,6 +142,7 @@ const App = () => {
 						? loginForm()
 						: <div>
 							<p>{user.name} logged in</p>
+							<button onClick={handleLogout}>logout</button>
 							{noteForm()}
 						</div>
 				}
