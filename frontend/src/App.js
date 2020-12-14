@@ -3,6 +3,7 @@ import noteService from './services/notes'
 import loginService from './services/login'
 import Note from './components/Note'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import NoteForm from './components/NoteForm'
 
@@ -118,21 +119,25 @@ const App = () => {
 				<Notification message={errorMessage} />
 				{
 					(user === null) ? 
-						<LoginForm
-							username={username}
-							password={password}
-							handleUsernameChange={handleUsernameChange}
-							handlePasswordChange={handlePasswordChange}
-							handleLogin={handleLogin} 
-						/> : 
+						<Togglable buttonLabel='login'>
+							<LoginForm
+								username={username}
+								password={password}
+								handleUsernameChange={handleUsernameChange}
+								handlePasswordChange={handlePasswordChange}
+								handleLogin={handleLogin} 
+							/> 
+						</Togglable> :
 						<div>
 							<p>{user.name} logged in</p>
 							<button onClick={handleLogout}>logout</button>
-							<NoteForm 
-								addNote={addNote}
-								newNote={newNote}
-								handleNewNoteChange={handleNewNoteChange}
-							/>
+							<Togglable buttonLabel="new note">
+								<NoteForm 
+									addNote={addNote}
+									newNote={newNote}
+									handleNewNoteChange={handleNewNoteChange}
+								/>
+							</Togglable>
 						</div>
 				}
 				<button onClick={handleToggleShowAll}>
