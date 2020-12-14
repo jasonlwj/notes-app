@@ -9,11 +9,8 @@ import NoteForm from './components/NoteForm'
 
 const App = () => {
 	const [ notes, setNotes ] = useState([])
-	const [ newNote, setNewNote ] = useState('')
 	const [ showAll, setShowAll ] = useState(true) // false: only show important notes
 	const [ errorMessage, setErrorMessage ] = useState(null)
-	const [ username, setUsername ] = useState('')
-	const [ password, setPassword ] = useState('')
 	const [ user, setUser ] = useState(null)
 	
 	// get all notes
@@ -34,21 +31,10 @@ const App = () => {
 		}
 	}, [])
 
-	// create note
-	const addNote = event => {
-		event.preventDefault()
-		const noteToAdd = {
-			content: newNote,
-			date: new Date().toISOString(),
-			important: Math.random() < 0.5
-		}
-
-		noteService
-			.create(noteToAdd)
-			.then(returnedNote => {
-				setNotes(notes.concat(returnedNote))
-				setNewNote('')
-			})
+	// add a note to the global list of notes
+	const addNote = async noteObject => {
+		const createdNote = await noteService.create(noteObject)
+		setNotes(notes.concat(createdNote))
 	}
 
 	// update note
@@ -67,15 +53,10 @@ const App = () => {
 			})
 	}
 
-	// login button event handler
-	const handleLogin = async event => {
-		event.preventDefault()
-
+	// login
+	const login = async credentials => {
 		try {
-			const user = await loginService.login({
-				username,
-				password
-			})
+			const user = await loginService.login(credentials)
 
 			window.localStorage.setItem(
 				'loggedInNoteUser', JSON.stringify(user)
@@ -83,8 +64,6 @@ const App = () => {
 
 			noteService.setToken(user.token)
 			setUser(user)
-			setUsername('')
-			setPassword('')
 		} catch (exception) {
 			setErrorMessage('Wrong credentials')
 			setTimeout(() => {
@@ -102,14 +81,29 @@ const App = () => {
 
 	// handle form state
 	const handleToggleShowAll = () => setShowAll(!showAll)
-	const handleNewNoteChange = ({ target }) => setNewNote(target.value)
-	const handleUsernameChange = ({ target }) => setUsername(target.value)
-	const handlePasswordChange = ({ target }) => setPassword(target.value)
 
 	// grab notes that match filter criteria
 	const notesToShow = showAll 
 		? notes 
 		: notes.filter(note => note.important)
+
+	// return the login form
+	const loginForm = () => (
+		<Togglable buttonLabel='login'>
+			<LoginForm
+				login={login} 
+			/> 
+		</Togglable>
+	)
+
+	// return the note form
+	const noteForm = () => (
+		<Togglable buttonLabel="new note">
+			<NoteForm 
+				addNote={addNote}
+			/>
+		</Togglable>
+	)
 
 	// render it all to the screen
 	return (
@@ -119,25 +113,11 @@ const App = () => {
 				<Notification message={errorMessage} />
 				{
 					(user === null) ? 
-						<Togglable buttonLabel='login'>
-							<LoginForm
-								username={username}
-								password={password}
-								handleUsernameChange={handleUsernameChange}
-								handlePasswordChange={handlePasswordChange}
-								handleLogin={handleLogin} 
-							/> 
-						</Togglable> :
+						 loginForm() :
 						<div>
 							<p>{user.name} logged in</p>
 							<button onClick={handleLogout}>logout</button>
-							<Togglable buttonLabel="new note">
-								<NoteForm 
-									addNote={addNote}
-									newNote={newNote}
-									handleNewNoteChange={handleNewNoteChange}
-								/>
-							</Togglable>
+							{noteForm()}
 						</div>
 				}
 				<button onClick={handleToggleShowAll}>
